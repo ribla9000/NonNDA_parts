@@ -1,0 +1,28 @@
+version: '3.10'
+
+services:
+  postgres-ai-chatbot:
+    build:
+      context: .
+      dockerfile: PostgresDockerfile
+    env_file:
+      - .env
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./db-backup:/var/lib/postgresql/data
+
+  ai-chatbot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["dockerize", "-wait", "tcp://postgres-ai-chatbot:5432", "-timeout", "1m", "--", "python", "./main.py"]
+    env_file:
+      - .env
+    volumes:
+      - ./:/app
+    depends_on:
+      - postgres-ai-chatbot
+    restart: always
+    ports:
+      - "8000:8000"

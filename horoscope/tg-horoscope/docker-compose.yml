@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  postgres-horoscope:
+    image: postgres:latest
+    env_file:
+      - .env
+    ports:
+      - "5431:5432"
+    volumes:
+      - ./db-backup:/var/lib/postgresql/data
+
+  ui-bot-horoscope:
+    build:
+      context: ./src
+      dockerfile: Dockerfile
+    command: ["dockerize", "-wait", "tcp://postgres-horoscope:5432", "-timeout", "1m", "--", "python", "./main.py"]
+    env_file:
+      - .env
+    volumes:
+      - ./src:/app
+      - ./userdata:/userdata
+    depends_on:
+      - postgres-horoscope
+    restart: always
+    ports:
+      - "8442:8443"

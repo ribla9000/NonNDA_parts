@@ -1,0 +1,7 @@
+venv
+.env
+userdata
+.idea
+db-backup
+.pyc
+__pycache__/

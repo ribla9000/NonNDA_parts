@@ -1,0 +1,7 @@
+*.env
+*.venv
+*.pyc
+*.xml
+botData
+db-backup
+test.py

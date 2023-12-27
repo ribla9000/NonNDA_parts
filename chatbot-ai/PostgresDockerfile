@@ -1,0 +1,14 @@
+FROM postgres:14
+
+COPY ./init.sql /docker-entrypoint-initdb.d/init.sql
+
+RUN apt-get update && \
+    apt-get install -y build-essential postgresql-server-dev-14
+
+RUN mkdir -p /usr/share/postgresql/14/extension/pgvector
+
+WORKDIR /usr/share/postgresql/14/extension/pgvector
+
+COPY pgvector /usr/share/postgresql/14/extension/pgvector
+
+RUN make && make install
